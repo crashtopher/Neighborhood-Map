@@ -47,7 +47,16 @@ var ViewModel = function(){
 
     for (i=0; i<initialMarkers.length; i++){
         this.markerTitles.push(initialMarkers[i].title);
-        this.markerList.push(new google.maps.Marker(initialMarkers[i]));
+        // this.markerList.push(new google.maps.Marker(initialMarkers[i]));
     }
+
+    $("#google").append(
+        "function initMap(){" +
+        "var mapCenter = {lat: 34.380449, lng: -118.531390};" +
+        "var map = new google.maps.Map(document.getElementById('map'), {" +
+        "   zoom: 13," +
+        "  center: mapCenter" +
+        "});" +
+    "};");
 }
 ko.applyBindings(new ViewModel());
