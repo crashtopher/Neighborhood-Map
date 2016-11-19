@@ -42,13 +42,7 @@ var initialMarkers = [
 var ViewModel = function(){
     this.Heading = ko.observable("Best Locations");
 
-    this.markerList = [];
     this.markerTitles = ko.observableArray([])
-
-    for (i=0; i<initialMarkers.length; i++){
-        this.markerTitles.push(initialMarkers[i].title);
-        // this.markerList.push(new google.maps.Marker(initialMarkers[i]));
-    }
 
     $("#google").append(
         "function initMap(){" +
@@ -58,5 +52,9 @@ var ViewModel = function(){
         "  center: mapCenter" +
         "});" +
     "};");
+
+    for (i=0; i<initialMarkers.length; i++){
+        this.markerTitles.push(initialMarkers[i].title);
+    }
 }
 ko.applyBindings(new ViewModel());
