@@ -9,8 +9,15 @@
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-lg-2 no-float">
+            <div class="col-sm-2 no-float">
                 <h2 data-bind="text: Heading"></h2>
+                <input type="text" id="filter" value="">
+                <button id="filter-btn">Filter</button>
+                <table data-bind="foreach: markerTitles">
+                    <tr>
+                        <td data-bind="text: $data"></td>
+                    </tr>
+                </table>
             </div>
             <div class="col-lg-10 no-float" id="map"></div>
         </div>

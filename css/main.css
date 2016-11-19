@@ -19,11 +19,24 @@ html,body,.container {
   float: none;
 }
 
-.col-lg-2{
+.col-sm-2{
     background-color: #2e3d49;
     color: white;
 }
 
 .col-lg-10{
     padding-left: 0px;
+}
+
+#filter{
+    color: black;
+}
+
+#filter-btn{
+    background-color: #3f3f8e;
+}
+
+td {
+    line-height: 2.5;
+    font-family: Helvetica, Arial, sans-serif;
 }
