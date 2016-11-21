@@ -24,6 +24,10 @@ html,body,.container {
     color: white;
 }
 
+select{
+    color: black;
+}
+
 .col-lg-10{
     padding-left: 0px;
 }

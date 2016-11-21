@@ -11,11 +11,16 @@
         <div class="row">
             <div class="col-sm-2 no-float">
                 <h2 data-bind="text: Heading"></h2>
-                <input type="text" id="filter" value="">
-                <button id="filter-btn">Filter</button>
-                <table data-bind="foreach: markerTitles">
+                <select>
+                    <option value="All">All</option>
+                    <option value="Restaurant">Restaurant</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Outdoors">Outdoors</option>
+                    <option value="Dining">Dining</option>
+                </select>
+                <table data-bind="foreach: initialMarkers">
                     <tr>
-                        <td data-bind="text: $data"></td>
+                        <td data-bind="text: $data.title, click: $data.openWindow"></td>
                     </tr>
                 </table>
             </div>
