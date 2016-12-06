@@ -5,28 +5,32 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/main.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta property="og:url"           content="file:///Users/christophershaw/Desktop/neighbor_map/index.html">
+    <meta property="og:type"          content="website">
+    <meta property="og:title"         content="Neighborhood Map">
 </head>
 <body>
     <div class="container">
         <div class="row">
-            <div class="col-sm-2 no-float">
-                <h2 data-bind="text: Heading"></h2>
-                <select>
-                    <option value="All">All</option>
-                    <option value="Restaurant">Restaurant</option>
-                    <option value="Entertainment">Entertainment</option>
-                    <option value="Outdoors">Outdoors</option>
-                    <option value="Dining">Dining</option>
-                </select>
-                <table data-bind="foreach: initialMarkers">
-                    <tr>
-                        <td data-bind="text: $data.title, click: $data.openWindow"></td>
-                    </tr>
-                </table>
+            <div class="navigation">
+                <div class="col-sm-2" id="list">
+                    <h2 data-bind="text: Heading"></h2>
+                    <select data-bind="options: AvailableOptions"></select>
+                    <table data-bind="foreach: filteredMarkers">
+                        <tr>
+                            <td data-bind="text: $data.title, click: $data.openWindow"></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
-            <div class="col-lg-10 no-float" id="map"></div>
+
+            <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+            <label for="nav-trigger"></label>
+
+            <div class="col-md-8 site-wrap" id="map"></div>
         </div>
     </div>
+
     <script type="text/javascript" id="google"></script>
     <script type="text/javascript" src="js/libs/knockout-3.4.1.js"></script>
     <script type="text/javascript" src="js/libs/jquery-3.1.1.min.js"></script>
