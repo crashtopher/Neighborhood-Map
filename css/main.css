@@ -5,6 +5,10 @@ body{
     overflow-x: hidden;
 }
 
+input{
+    color: black;
+}
+
 .container {
     display:table;
     width: 100%;

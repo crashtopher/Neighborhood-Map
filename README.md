@@ -1,0 +1,1 @@
+To run this program simply open index.html in your favorite web browser!
