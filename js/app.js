@@ -98,15 +98,7 @@ var ViewModel = function(){
 
     query: ko.observable('');
 
-    this.search = function(value) {
-        self.filteredMarkers.removeAll();
-
-        for(var x in initialMarkers) {
-          if(initialMarkers[x].title.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
-            self.filteredMarkers.push(initialMarkers[x]);
-          }
-        }
-      }
+    var infowindow = new google.maps.InfoWindow();
 
     this.filteredMarkers().forEach(function (location) {
         var marker = new google.maps.Marker({
@@ -118,14 +110,6 @@ var ViewModel = function(){
 
         location.marker = marker;
 
-        var infowindow = new google.maps.InfoWindow({
-            content: location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + location.share
-        });
-
-        marker.addListener('click', function() {
-            infowindow.open(map, marker);
-        })
-
         var Animate = function(){
             if (marker.getAnimation() !== null) {
                 marker.setAnimation(null);
@@ -136,14 +120,30 @@ var ViewModel = function(){
                 }, 1400);
             }
         }
-        marker.addListener('click', Animate);
+
+        marker.addListener('click', function() {
+            infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link);
+            infowindow.open(map, marker);
+            Animate();
+        })
 
         location.openWindow = function(){
             Animate();
+            infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link);
             infowindow.open(map, marker);
         }
 
     })
+
+    this.search = function(value) {
+        self.filteredMarkers.removeAll();
+
+        for(var x in initialMarkers) {
+          if(initialMarkers[x].title.toLowerCase().indexOf(value.toLowerCase()) >= 0) {
+            self.filteredMarkers.push(initialMarkers[x]);
+          }
+        }
+    }
 
     this.query.subscribe(this.search);
 };
