@@ -125,22 +125,20 @@ var ViewModel = function(){
         marker.addListener('click', function() {
             infowindow.open(map, marker);
         })
-
-        marker.addListener('click', function() {
+        marker.animate = function(){
             if (marker.getAnimation() !== null) {
                 marker.setAnimation(null);
             } else {
                 marker.setAnimation(google.maps.Animation.BOUNCE);
             }
+        }
+        marker.addListener('click', function() {
+            marker.animate();
         });
 
         location.openWindow = function(){
+            marker.animate();
             infowindow.open(map, marker);
-            if (marker.getAnimation() !== null) {
-                marker.setAnimation(null);
-            } else {
-                marker.setAnimation(google.maps.Animation.BOUNCE);
-            }
         }
 
     })
