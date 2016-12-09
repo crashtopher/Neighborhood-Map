@@ -125,19 +125,21 @@ var ViewModel = function(){
         marker.addListener('click', function() {
             infowindow.open(map, marker);
         })
-        marker.animate = function(){
+
+        var Animate = function(){
             if (marker.getAnimation() !== null) {
                 marker.setAnimation(null);
             } else {
                 marker.setAnimation(google.maps.Animation.BOUNCE);
+                setTimeout(function() {
+                    marker.setAnimation(null);
+                }, 1400);
             }
         }
-        marker.addListener('click', function() {
-            marker.animate();
-        });
+        marker.addListener('click', Animate);
 
         location.openWindow = function(){
-            marker.animate();
+            Animate();
             infowindow.open(map, marker);
         }
 
