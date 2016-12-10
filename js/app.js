@@ -98,6 +98,8 @@ var ViewModel = function(){
 
     query: ko.observable('');
 
+    self.contentString = ('');
+
     var infowindow = new google.maps.InfoWindow();
 
     this.filteredMarkers().forEach(function (location) {
@@ -109,6 +111,7 @@ var ViewModel = function(){
         });
 
         location.marker = marker;
+        location.wikiURL = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + location.title + '&format=json&callback=wikiCallback';
 
         var Animate = function(){
             if (marker.getAnimation() !== null) {
@@ -122,18 +125,40 @@ var ViewModel = function(){
         }
 
         marker.addListener('click', function() {
-            infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link);
-            infowindow.open(map, marker);
+            wikiAPI();
             Animate();
+            infowindow.open(map, marker);
         })
 
         location.openWindow = function(){
+            wikiAPI();
             Animate();
-            infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link);
             infowindow.open(map, marker);
         }
 
-    })
+        // Load wikipedia api
+
+        var wikiAPI = function(){
+            var wikieRequestTimeout = setTimeout(function(){
+              console.log("failed to get wikipedia resources")
+            }, 8000);
+            $.ajax({
+              url: location.wikiURL,
+              dataType: "jsonp",
+              // jsonp: "callback",
+              success: function( response ) {
+                var articleList = response[1];
+
+                for (var i=0; i < articleList.length; i++){
+                  articleStr = articleList[i];
+                  var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+                }
+                infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + '<li><a href="' + url + '">' + articleStr + '</a></li>');
+                clearTimeout(wikieRequestTimeout);
+              }
+            });
+        }
+    });
 
     this.search = function(value) {
         self.filteredMarkers.removeAll();
@@ -146,7 +171,7 @@ var ViewModel = function(){
     }
 
     this.query.subscribe(this.search);
-};
+}
 
 var errorMessage = function(){
     $("main").append("<p>oops! looks like the map is broken...</p>")

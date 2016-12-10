@@ -14,7 +14,7 @@
                     <h2>Best Locations</h2>
                     <input placeholder="Search…" type="search" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
                     <table data-bind="foreach: filteredMarkers">
-                        <tr>
+                        <tr id="foo">
                             <td data-bind="text: $data.title, click: $data.openWindow"></td>
                         </tr>
                     </table>
