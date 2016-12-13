@@ -98,7 +98,7 @@ var ViewModel = function(){
 
     query: ko.observable('');
 
-    self.contentString = ('');
+    this.WikiString ='';
 
     var infowindow = new google.maps.InfoWindow();
 
@@ -128,12 +128,14 @@ var ViewModel = function(){
             wikiAPI();
             Animate();
             infowindow.open(map, marker);
+            infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + self.WikiString);
         })
 
         location.openWindow = function(){
             wikiAPI();
             Animate();
             infowindow.open(map, marker);
+            infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + self.WikiString);
         }
 
         // Load wikipedia api
@@ -149,11 +151,13 @@ var ViewModel = function(){
               success: function( response ) {
                 var articleList = response[1];
 
+                self.WikiString = '';
+
                 for (var i=0; i < articleList.length; i++){
                   articleStr = articleList[i];
                   var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+                  self.WikiString += '<li><a href="' + url + '">' + articleStr + '</a></li>' + '<br>';
                 }
-                infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + '<li><a href="' + url + '">' + articleStr + '</a></li>');
                 clearTimeout(wikieRequestTimeout);
               }
             });
