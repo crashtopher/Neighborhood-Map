@@ -98,7 +98,9 @@ var ViewModel = function(){
 
     query: ko.observable('');
 
-    this.WikiString ='';
+    this.WikiString = '';
+
+    this.wikiError = '';
 
     var infowindow = new google.maps.InfoWindow();
 
@@ -127,41 +129,64 @@ var ViewModel = function(){
         marker.addListener('click', function() {
             wikiAPI();
             Animate();
+            infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + self.WikiString + self.wikiError);
             infowindow.open(map, marker);
-            infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + self.WikiString);
         })
 
         location.openWindow = function(){
             wikiAPI();
             Animate();
+            infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + self.WikiString + self.wikiError);
             infowindow.open(map, marker);
-            infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + self.WikiString);
         }
+
+        // filter function
+
+        this.filterLocations = ko.computed(() => {
+          if (!self.query() || self.query().trim() === '') {
+              location.marker.setVisible(true);
+
+            return self.filteredMarkers();
+            } else {
+            return ko.utils.arrayFilter(self.filteredMarkers(), (location) => {
+              let isMatch = location.title.toLowerCase().indexOf(self.query().toLowerCase()) !== -1;
+
+              location.marker.setVisible(isMatch);
+
+              return isMatch;
+            });
+          }
+        });
 
         // Load wikipedia api
 
         var wikiAPI = function(){
-            var wikieRequestTimeout = setTimeout(function(){
-              console.log("failed to get wikipedia resources")
-            }, 8000);
-            $.ajax({
-              url: location.wikiURL,
-              dataType: "jsonp",
-              // jsonp: "callback",
-              success: function( response ) {
-                var articleList = response[1];
+            return $.ajax({
+                url: location.wikiURL,
+                dataType: "jsonp"
+            });
+        }
+        wikiAPI().done(function(response) {
+            var articleList = response[1];
 
-                self.WikiString = '';
+            self.WikiString = '';
 
+            if (articleList.length > 0) {
                 for (var i=0; i < articleList.length; i++){
                   articleStr = articleList[i];
                   var url = 'http://en.wikipedia.org/wiki/' + articleStr;
                   self.WikiString += '<li><a href="' + url + '">' + articleStr + '</a></li>' + '<br>';
                 }
-                clearTimeout(wikieRequestTimeout);
-              }
-            });
-        }
+            }else{
+                self.WikiString = 'No wikipedia information available';
+            };
+        }).fail(function(err) {
+            self.wikiError = 'Failed to conect to Wikipedia';
+        });
+        // .always(function() {
+        //     infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + self.WikiString + self.wikiError);
+        //     infowindow.open(map, marker);
+        // });
     });
 
     this.search = function(value) {
