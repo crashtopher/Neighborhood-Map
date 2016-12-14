@@ -129,15 +129,15 @@ var ViewModel = function(){
         marker.addListener('click', function() {
             wikiAPI();
             Animate();
-            infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + self.WikiString + self.wikiError);
-            infowindow.open(map, marker);
+            // infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + self.WikiString + self.wikiError);
+            // infowindow.open(map, marker);
         })
 
         location.openWindow = function(){
             wikiAPI();
             Animate();
-            infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + self.WikiString + self.wikiError);
-            infowindow.open(map, marker);
+            // infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + self.WikiString + self.wikiError);
+            // infowindow.open(map, marker);
         }
 
         // filter function
@@ -161,33 +161,34 @@ var ViewModel = function(){
         // Load wikipedia api
 
         var wikiAPI = function(){
-            return $.ajax({
+            var wikieRequestTimeout = setTimeout(function(){
+              console.log("failed to get wikipedia resources")
+            }, 8000);
+            $.ajax({
                 url: location.wikiURL,
-                dataType: "jsonp"
-            });
+                dataType: "jsonp",
+                success: (function(response) {
+                    var articleList = response[1];
+
+                    self.WikiString = '';
+
+                    if (articleList.length > 0) {
+                        for (var i=0; i < articleList.length; i++){
+                          articleStr = articleList[i];
+                          var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+                          self.WikiString += '<li><a href="' + url + '">' + articleStr + '</a></li>' + '<br>';
+                        }
+                        infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + self.WikiString + self.wikiError);
+                    }else{
+                        self.WikiString = 'No wikipedia information available';
+                        infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + self.WikiString + self.wikiError);
+                    };
+                    clearTimeout(wikieRequestTimeout);
+                })
+            })
+        infowindow.open(map, marker);
         }
-        wikiAPI().done(function(response) {
-            var articleList = response[1];
-
-            self.WikiString = '';
-
-            if (articleList.length > 0) {
-                for (var i=0; i < articleList.length; i++){
-                  articleStr = articleList[i];
-                  var url = 'http://en.wikipedia.org/wiki/' + articleStr;
-                  self.WikiString += '<li><a href="' + url + '">' + articleStr + '</a></li>' + '<br>';
-                }
-            }else{
-                self.WikiString = 'No wikipedia information available';
-            };
-        }).fail(function(err) {
-            self.wikiError = 'Failed to conect to Wikipedia';
-        });
-        // .always(function() {
-        //     infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + self.WikiString + self.wikiError);
-        //     infowindow.open(map, marker);
-        // });
-    });
+    })
 
     this.search = function(value) {
         self.filteredMarkers.removeAll();
