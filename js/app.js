@@ -162,8 +162,9 @@ var ViewModel = function(){
 
         var wikiAPI = function(){
             var wikieRequestTimeout = setTimeout(function(){
-              console.log("failed to get wikipedia resources")
-            }, 8000);
+              self.wikiError = "failed to get wikipedia resources";
+              infowindow.setContent(location.title + "<br>" + location.address + "<br>" + location.link + "<br>" + self.WikiString + self.wikiError);
+            }, 2000);
             $.ajax({
                 url: location.wikiURL,
                 dataType: "jsonp",
